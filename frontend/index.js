@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     student.url
                 ].join(',');
             });
-            
+
             const csvContent = [headers.join(','), ...csvRows].join('\n');
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
@@ -72,8 +72,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
 
         // Filter function
-        const filterData = (section) => {
-            filteredData = section === 'all' 
+        let filterData = (section) => {
+            filteredData = section === 'all'
                 ? [...data]
                 : data.filter(student => (student.section || 'N/A') === section);
             renderLeaderboard(filteredData);
@@ -143,7 +143,22 @@ document.addEventListener('DOMContentLoaded', async () => {
             renderLeaderboard(sortedData);
         });
 
+        const search = document.getElementById('searchBar');
+        search.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const searchQuery = document.getElementById('taskBar').value.trim();
+
+            if(searchQuery) {
+                filterData = data.filter((player) => player.name.toLowerCase().includes(searchQuery.toLowerCase())
+                );
+                console.log(searchQuery);
+                renderLeaderboard(filterData);
+            }
+        });
+
     } catch (error) {
         console.error('Error fetching data:', error);
     }
 });
+
+
